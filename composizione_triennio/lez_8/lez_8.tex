@@ -1,0 +1,165 @@
+\documentclass[11pt]{article}
+\usepackage{geometry} 
+\geometry{a4paper,top=3cm,bottom=3cm,left=2.5cm,right=2.5cm}   
+\usepackage{multicol}
+\usepackage[english, italian]{babel}
+\usepackage{fancyhdr}
+\usepackage{musicography}
+\geometry{centering}
+\usepackage{graphicx}
+
+
+\pagestyle{fancy}                                 %serve ad inserire la linea sopra e il titolino
+\rhead{\textsf{Lezione 4 "\textit{Sintesi Additiva e DFT di un suono reale}"}}
+\renewcommand{\headrulewidth}{5pt} %grandezza della linea in alto
+\renewcommand{\footrulewidth}{1pt}   % grandezza della linea in basso
+
+
+\begin{document}
+\begin{minipage}{0.55\linewidth}
+\vspace{0.3cm}
+{\large{\textbf{\textsf{Gabriele Petrillo}}}}\\\end{minipage}
+
+\vspace{0.3cm}
+\begin{minipage}{0.95\linewidth}
+\begin{center}
+{\huge{\textbf{\textsf{Sintesi Additiva e DFT di un suono reale}}}} \\
+\end{center}
+\end{minipage}
+\vspace*{0.2cm}
+
+
+%=========ABSTRACT=======================
+\begin{center}
+\begin{minipage}[c]{14cm}
+\begin{textit}
+
+Ciò che segue è stato sviluppato a partire dalla dispensa di composizione del 17/02/2020 del prof. N.Bernardini presso il conservatorio S.Cecilia di Roma che possono essere consultati presso https://git.smerm.org/SMERM/TR-2019-2020/src/branch/master/COME-02/A.A.2019-2020/20200224. Questa dispensa tratta della sintesi additiva, la struttura delle forme d'onda canoniche e la DFT di un suono reale in Octave.
+
+\end{textit}
+\end{minipage}
+\end{center}
+\vspace*{0.2cm}
+
+%=========ARTICOLO========================
+
+\begin{multicols*}{2}
+\parskip=0pt
+
+\textbf{\textsf {DFT in Octave}}\\
+
+\noindent Vediamo come realizzare una DFT (\textit{Discrete Fourier Transform}) di un suono reale in Octave.
+
+\begin{center}
+\begin{minipage}[c]{6.2cm}
+\begin{sffamily}
+\scriptsize
+
+[y fc]=audioread("trumpet\_wav.wav");\\
+y = y'; \\
+
+nsamples=1000\\
+
+dur=length(y)/fc;\\
+sinc=$1/$fc;\\
+t=[0:sinc:dur-sinc];\\
+binsize=fc/nsamples;\\
+f=[-fc/2 : binsize : fc/2 - binsize];\\
+yfrag = y(5000 : 5000 + nsamples - 1);\\
+tfrag = t(5000 : 5000 + nsamples - 1);\\
+
+mydft = zeros(1, nsamples);\\
+
+for k = 1 : length(f)\\
+  anal = e.\wedge$(-i * 2 * pi * f(k) * tfrag)$;\\
+  $inter = anal  * yfrag;\\
+  temp = sum(inter);\\
+  mydft(1,k) = temp;\\
+end$\\
+
+mag = abs(mydft)/nsamples;\\
+
+figure(1)\\
+stem(f, mag*2)\\
+axis([0 7000])\\
+
+\end{sffamily}
+\end{minipage}
+\end{center}\\
+
+Come abbiamo già visto nelle lezioni precedenti l'opcode \textit {audioread} importa in una tabella un file audio, in questo caso trumpet\_wav.wav che si trova nel percorso di Octave. I campioni sono importati nell'array verticale y, tuttavia, per i nostri calcoli, è necessario avere i campioni disposti in un array orizzontale, per ottenere l'inverso di un array è necessario inserire un apice singolo accanto alla variabile dell'array, quindi: 
+
+\begin{center}
+\begin{minipage}[c]{6.2cm}
+\begin{sffamily}
+\scriptsize
+
+y = y'; \\
+
+\end{sffamily}
+\end{minipage}
+\end{center}\\
+
+In questo modo abbiamo creato un array \textit{y} orizzontale.
+A questo punto dobbiamo decidere il numero di campioni da analizzare, in questo caso 1000, quindi:
+ 
+ \begin{center}
+\begin{minipage}[c]{6.2cm}
+\begin{sffamily}
+\scriptsize
+
+nsamples=1000\\
+
+\end{sffamily}
+\end{minipage}
+\end{center}\\
+
+Dobbiamo quindi determinare la durata in secondi del frammento \textit{dur} ed il suo periodo \textit{sinc}:
+
+ \begin{center}
+\begin{minipage}[c]{6.2cm}
+\begin{sffamily}
+\scriptsize
+
+dur=length(y)/fc;\\
+sinc=$1/$fc;\\
+
+\end{sffamily}
+\end{minipage}
+\end{center}\\
+
+Per costruire l'asse del tempo (asse x) useremo:
+
+ \begin{center}
+\begin{minipage}[c]{6.2cm}
+\begin{sffamily}
+\scriptsize
+
+t=[0 : sinc : dur-sinc];\\
+
+\end{sffamily}
+\end{minipage}
+\end{center}\\
+
+La risoluzione della nostra DFT è definita dal parametro binszie che si definisce come: $binsize = \frac{fc}{nsamples}$, quindi:
+
+ \begin{center}
+\begin{minipage}[c]{6.2cm}
+\begin{sffamily}
+\scriptsize
+
+binsize=fc/nsamples;\\
+
+\end{sffamily}
+\end{minipage}
+\end{center}\\
+
+
+Si noti che tra il vettore x e l’operatore di elevazione al quadrato è stato frapposto un punto. Il punto viene adoperato per effettuare operazioni su ogni singolo elemento del vettore che lo precede.
+
+\section*{\centering\small{BIBLIOGRAFIA}}
+•\textsc{\textsf {Bianchini, Riccardo and Cipriani, Alessandro}}, \emph{Il suono virtuale}, Contemponet 2001\\
+
+\end{multicols*}
+
+\end{document}
